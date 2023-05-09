@@ -50,3 +50,28 @@ docker run -p 8500:8500 -p 8501:8501 --mount type=bind,source=/path/to/your/mode
 
 10. When using API, ypu will get the https:\\ where you can access the website. Website is defined in the API/templates folder, under the name index.html. You will be able to upload a file and get predictions from model you specify in the previous command.
 
+11. Defined constants:
+- for augpoly78 and 78kratimenos, use constants:
+SAMPLE_RATE = 22050
+BLOCK_SIZE = 1024
+HOP_SIZE = 512
+MEL_BANDS = 128
+DURATION = 1.0
+
+-for other models use constants:
+SAMPLE_RATE = 22050
+BLOCK_SIZE = round(46.4 * SAMPLE_RATE / 1000)
+HOP_SIZE = round(259.41)
+MEL_BANDS = 96
+DURATION = 1.0 
+
+12. model augpoly needs to have hamming_accuracy function defined in the folder and can be loaded with this command:
+
+model = tf.keras.models.load_model(
+    'path_to_augpoly78.h5',
+    custom_objects={
+        'F1Score': F1Score,
+        'hamming_accuracy': hamming_accuracy
+    })
+
+13. file predictions_test_data_augpoly.py is used for generating json file predictions for main model that we have on the test data. The json file is saved to testing_json_file under name: augpoly78_test.json.

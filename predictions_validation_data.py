@@ -6,6 +6,10 @@ from tensorflow.keras.models import load_model
 from scipy.ndimage import zoom
 from tqdm import tqdm
 import json
+import tensorflow as tf
+from tensorflow.keras.models import load_model
+from tensorflow.keras import backend as K
+from tensorflow_addons.metrics import F1Score
 
 # # Constants for model mel_spec_irmas_singleton.h5
 # SAMPLE_RATE = 22050
@@ -71,7 +75,6 @@ def process_audio_files(input_dir):
                 audio_path = os.path.join(root, file)
                 try:
                     log_mel_spectrograms = preprocess_audio(audio_path)
-                    X.append(log_mel_spectrograms)
                     for spectrogram in log_mel_spectrograms:
                         X.append(spectrogram)
 
@@ -92,7 +95,14 @@ def aggregate_predictions(predictions):
     return summed / np.sum(summed)
 
 
-def test_model(model, test_data_path, threshold=0.5):
+def hamming_accuracy(y_true, y_pred):
+    y_true = K.round(K.clip(y_true, 0, 1))
+    y_pred = K.round(K.clip(y_pred, 0, 1))
+    equal_elements = K.cast(K.equal(y_true, y_pred), K.floatx())
+    return K.mean(equal_elements)
+
+
+def test_model(model, test_data_path, threshold=0.31):
     results = {}
     accuracies = []
 
@@ -129,9 +139,14 @@ def test_model(model, test_data_path, threshold=0.5):
     return results
 
 
-model = load_model(
-    'path_to_h5_model')
-test_data_path = 'path_to_IRMAS_Validation_Data'
+model = tf.keras.models.load_model(
+    'C:/AudioClassification/h5_models/augpoly78.h5',
+    custom_objects={
+        'F1Score': F1Score,
+        'hamming_accuracy': hamming_accuracy
+    })
+
+test_data_path = 'IRMAS_validation_data_path'
 results = test_model(model, test_data_path)
-with open("path_to_results.json", "w") as outfile:
+with open("validation_json_files", "w") as outfile:
     json.dump(results, outfile)
