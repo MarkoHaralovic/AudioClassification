@@ -96,7 +96,7 @@ def preprocess_audio_chromagram(audio_path):
     for segment in audio_segments:
         stft = librosa.stft(segment, n_fft=BLOCK_SIZE, hop_length=HOP_SIZE)
         chromagram = librosa.feature.chroma_stft(
-            S=np.abs(stft), sr=SAMPLE_RATE, n_chroma=12)
+            S=np.abs(stft), sr=SAMPLE_RATE, n_chroma=24)
         chromagrams.append(chromagram * tin_normalize)
 
     return chromagrams

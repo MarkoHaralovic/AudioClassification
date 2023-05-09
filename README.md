@@ -75,3 +75,8 @@ model = tf.keras.models.load_model(
     })
 
 13. file predictions_test_data_augpoly.py is used for generating json file predictions for main model that we have on the test data. The json file is saved to testing_json_file under name: augpoly78_test.json.
+
+14.augpoly78_test.json is json file containing predictions of our main model on the test data with treshold set at 0.5,
+and augpoly78_test1.json is json file containing predictions of our main model on the test data with treshold set at 0.3
+
+15. Main prediction json file is : augpoly78_test.json ( treshold 0.5) 
