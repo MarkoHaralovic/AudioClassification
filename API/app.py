@@ -21,7 +21,7 @@ SAMPLE_RATE = 22050
 BLOCK_SIZE = 1024
 HOP_SIZE = 512
 MEL_BANDS = 128
-DURATION = 1.0
+DURATION = 1.0gi
 
 
 def preprocess_audio(audio_path):
@@ -69,8 +69,8 @@ def aggregate_predictions(predictions):
     return summed / np.sum(summed)
 
 
-model = load_model(
-    'C:\\Polyphonic_audio_classification\\second_model_mel_spec_irmas_singleton_lr_0.00001.h5')
+model_path = os.path.join("API", "model", "2")
+model = load_model(model_path)
 
 app = Flask(__name__, template_folder='templates')
 
