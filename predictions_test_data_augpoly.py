@@ -255,14 +255,14 @@ def predict_and_export(model_path, audio_folder, output_json_path):
         results[file] = track_results
 
     # Export the results to a JSON file
-    with open("C:\\AudioClassification\\testing_json_files\\augpoly78_test1.json", "w") as outfile:
+    with open(".\\testing_json_files\\augpoly78_test1.json", "w") as outfile:
         results = convert_np_int32_to_int(results)
         json.dump(results, outfile)
 
 
 if __name__ == '__main__':
-    model_path = 'C:/AudioClassification/h5_models/augpoly78.h5'
-    audio_folder = 'C:\\Polyphonic_audio_classification\\Datasets\\test_dataset-20230502T133016Z-001\\test_dataset'
+    model_path = './h5_models/augpoly78.h5'
+    audio_folder = 'test_dataset_path'
     output_json_path = 'predictions.json'
 
     predict_and_export(model_path, audio_folder, output_json_path)
