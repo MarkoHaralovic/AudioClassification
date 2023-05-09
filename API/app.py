@@ -10,6 +10,7 @@ from scipy.ndimage import zoom
 from tqdm import tqdm
 import glob
 import json
+import tensorflow as tf
 
 # SAMPLE_RATE = 22050
 # BLOCK_SIZE = round(46.4 * SAMPLE_RATE / 1000)
@@ -21,7 +22,9 @@ SAMPLE_RATE = 22050
 BLOCK_SIZE = 1024
 HOP_SIZE = 512
 MEL_BANDS = 128
-DURATION = 1.0gi
+DURATION = 1.0
+
+MODEL_API = os.environ.get("MODEL_API", "http://localhost:8501")
 
 
 def preprocess_audio(audio_path):
@@ -54,7 +57,7 @@ def predict_windows(model, log_mel_spectrogram):
 
     payload = {"instances": [log_mel_spectrogram.tolist()]}
     response = requests.post(
-        "http://localhost:8501/v1/models/2:predict", json=payload)
+        f"http://localhost:8501/v1/models/model2:predict", json=payload)
     try:
         pred = response.json()["predictions"][0]
     except KeyError:
@@ -69,8 +72,12 @@ def aggregate_predictions(predictions):
     return summed / np.sum(summed)
 
 
-model_path = os.path.join("API", "model", "2")
-model = load_model(model_path)
+current_dir = os.path.dirname(os.path.realpath(__file__))
+model_path = os.path.join(current_dir, "model", "2")
+# model = tf.saved_model.load(
+#     'C:\\AudioClassification\\API\\model\\2')
+model = tf.saved_model.load(model_path)
+
 
 app = Flask(__name__, template_folder='templates')
 
@@ -123,5 +130,5 @@ def predict():
 
 
 if __name__ == '__main__':
-    port = int(os.environ.get("PORT", 8080))
+    port = int(os.environ.get("PORT", 8501))
     app.run(host='0.0.0.0', port=port, debug=True)
