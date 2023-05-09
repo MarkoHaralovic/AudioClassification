@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Polyphonic Audio Classification</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='styles.css') }}"
+    />
+    <style>
+      body {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+        margin: 0;
+        background-color: black;
+        color: white;
+      }
+      header {
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        width: 100%;
+        padding: 10px;
+        position: fixed;
+        top: 0;
+        left: 0;
+        background-color: rgba(0, 0, 0, 0.8);
+        z-index: 1;
+      }
+      .header-text {
+        margin-top: 25px;
+        display: flex;
+        align-items: center;
+        font-size: 16px;
+      }
+
+      h1 {
+        margin-bottom: 20px;
+      }
+      form {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+      }
+      #result {
+        margin-top: 20px;
+      }
+    </style>
+    <script>
+      async function handleSubmit(event) {
+        event.preventDefault();
+        const formData = new FormData(event.target);
+
+        // Show progress bar while waiting for predictions
+        const progressBar = document.getElementById("progress");
+        progressBar.style.display = "block";
+        progressBar.innerText = "Processing audio file ...";
+
+        // Hide the list of predicted instruments while waiting for predictions
+        const instrumentsDiv = document.getElementById("instruments");
+        instrumentsDiv.innerHTML = "";
+
+        const response = await fetch("/predict", {
+          method: "POST",
+          body: formData,
+        });
+
+        // Hide progress bar after receiving predictions
+        progressBar.style.display = "none";
+
+        const result = await response.json();
+
+        // Display the list of predicted instruments
+        const instrumentList = Object.entries(result)
+          .filter(([, value]) => value === 1)
+          .map(([key]) => key)
+          .join(", ");
+        instrumentsDiv.innerHTML = instrumentList
+          ? `Instruments detected in the audio file: <strong>${instrumentList}</strong>`
+          : "No instruments detected";
+      }
+    </script>
+  </head>
+  <body>
+    <header>
+      <div class="header-text">LUMEN DATA SCIENCE</div>
+      <div class="header-text">TEAM TAMBURAŠI</div>
+    </header>
+    <wrapper>
+      <h1>Polyphonic Audio Classification</h1>
+      <form onsubmit="handleSubmit(event); return false;">
+        <input type="file" name="audio" accept=".wav,.ogg,.mp3" />
+        <button type="submit">Submit</button>
+      </form>
+      <div id="result">
+        <div id="progress" style="display: none"></div>
+        <div id="instruments"></div>
+      </div>
+    </wrapper>
+  </body>
+</html>
