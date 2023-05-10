@@ -4,17 +4,19 @@ import crepe
 from pydub import AudioSegment
 import pyrubberband as pyrb
 
+SAMPLE_RATE = 22050
+
 
 def pitch_sync_mixing(segment1, segment2):
     # Estimate pitch for both segments
-    f1, _ = crepe.predict(segment1, sr=22050, viterbi=True)
-    f2, _ = crepe.predict(segment2, sr=22050, viterbi=True)
+    f1, _ = crepe.predict(segment1, sr=SAMPLE_RATE, viterbi=True)
+    f2, _ = crepe.predict(segment2, sr=SAMPLE_RATE, viterbi=True)
 
     # Calculate the required frequency shift in semitones
     s = 12 * np.log2(f1 / f2)
 
     # Shift the second segment by the computed semitone shifts
-    segment2_shifted = pyrb.pitch_shift(segment2, sr=22050, n_steps=s)
+    segment2_shifted = pyrb.pitch_shift(segment2, sr=SAMPLE_RATE, n_steps=s)
 
     # Mix the two segments
     mixed_segment = segment1 + segment2_shifted
@@ -24,14 +26,14 @@ def pitch_sync_mixing(segment1, segment2):
 
 def tempo_sync_mixing(segment1, segment2):
     # Detect tempo for both segments
-    tempo1, _ = librosa.beat.beat_track(segment1, sr=22050)
-    tempo2, _ = librosa.beat.beat_track(segment2, sr=22050)
+    tempo1, _ = librosa.beat.beat_track(segment1, sr=SAMPLE_RATE)
+    tempo2, _ = librosa.beat.beat_track(segment2, sr=SAMPLE_RATE)
 
     # Calculate the required time stretching factor
     rate = tempo2 / tempo1
 
     # Stretch the second segment
-    segment2_stretched = pyrb.time_stretch(segment2, sr=22050, rate=rate)
+    segment2_stretched = pyrb.time_stretch(segment2, sr=SAMPLE_RATE, rate=rate)
 
     # Mix the two segments
     mixed_segment = segment1 + segment2_stretched

@@ -26,6 +26,15 @@ class_names = ['cel', 'cla', 'flu', 'gac', 'gel',
 
 
 def spectral_contrast(audio_path):
+    """
+    Compute spectral contrast features for a given audio file.
+
+    Args:
+    audio_path (str): Path to the audio file.
+
+    Returns:
+    list: Spectral contrast features.
+    """
     # Load and preprocess the audio
     audio, sr = librosa.load(audio_path, sr=SAMPLE_RATE, mono=False)
     audio = librosa.to_mono(audio)
@@ -51,6 +60,16 @@ def spectral_contrast(audio_path):
 
 
 def chromagram(audio_path):
+    """
+    Compute chromagram features for a given audio file.
+
+    Args:
+    audio_path (str): Path to the audio file.
+
+    Returns:
+    list: Chromagram features.
+    """
+
     tin_normalize = 50
 
     # Load and preprocess the audio
@@ -78,12 +97,31 @@ def chromagram(audio_path):
 
 
 def parse_instruments(file_name):
+    """
+    Extract the instrument abbreviations from the file name.
+
+    Args:
+    file_name (str): File name to extract instruments from.
+
+    Returns:
+    list: List of extracted instruments.
+    """
     # Extract the instrument abbreviations from the file name
     instruments = re.findall(r'\[([a-z]{3})\]', file_name)
     return [instr for instr in instruments if instr in class_names]
 
 
 def check_unique_instruments(file1, file2):
+    """
+    Check if the two files contain any common instruments.
+
+    Args:
+    file1 (str): File name 1.
+    file2 (str):file2 (str): File name 2.
+
+    Returns :
+    bool True if there are no common instruments, False otherwise
+    """
     # Check if the two files contain any common instruments
     instruments1 = parse_instruments(file1)
     instruments2 = parse_instruments(file2)
@@ -91,6 +129,14 @@ def check_unique_instruments(file1, file2):
 
 
 def mel_spectrogram(audio_path):
+    """
+    Compute log Mel spectrogram features for a given audio file.
+    Args:
+    audio_path (str): Path to the audio file.
+
+    Returns:
+    list: Log Mel spectrogram features.
+    """
     audio, sr = librosa.load(audio_path, sr=SAMPLE_RATE, mono=False)
     audio = librosa.to_mono(audio)
     audio = audio / np.max(np.abs(audio))
@@ -114,6 +160,16 @@ def mel_spectrogram(audio_path):
 
 
 def one_hot_encode(labels, class_names):
+    """
+    One-hot encode the given labels.
+    Args:
+    labels (list): List of labels to be encoded.
+    class_names (list): List of unique class names.
+
+    Returns:
+    list: One-hot encoded labels.
+    """
+
     # One-hot encode the given labels
     encoding = [0] * len(class_names)
     for label in labels:
@@ -122,6 +178,15 @@ def one_hot_encode(labels, class_names):
 
 
 def process_audio_files(input_dir, num_iterations=100):
+    """
+    Process audio files and extract features.
+    Args:
+    input_dir (str): Directory containing audio files.
+    num_iterations (int, optional): Number of iterations to run. Defaults to 100.
+
+    Returns:
+    tuple: X and y arrays containing the combined audio features and corresponding labels.
+    """
     X = []
     y = []
 

@@ -11,6 +11,12 @@ DURATION = 1.0  # Duration (in seconds) of each audio segment
 def parse_label(folder_name):
     """
     Parse the label from the folder name and create a binary representation of the label.
+
+    Args:
+    folder_name (str): Folder name containing the audio files.
+
+    Returns:
+    list: Binary representation of the label.
     """
     valid_instruments = ['cel', 'cla', 'flu', 'gac',
                          'gel', 'org', 'pia', 'sax', 'tru', 'vio', 'voi']
@@ -22,6 +28,12 @@ def parse_label(folder_name):
 def segment_audio(audio_path):
     """
     Load an audio file, convert it to mono, and segment it into fixed-length segments.
+
+    Args:
+    audio_path (str): Path to the audio file.
+
+    Returns:
+    list: Segmented audio.
     """
     # Load audio file
     audio, sr = librosa.load(audio_path, sr=SAMPLE_RATE, mono=False)
@@ -42,6 +54,12 @@ def segment_audio(audio_path):
 def process_audio_files(input_dir):
     """
     Process all audio files in the specified directory, segmenting them and extracting their labels.
+
+    Args:
+    input_dir (str): Path to the directory containing the audio files.
+
+    Returns:
+    np.array: Array containing the labels.
     """
     y = []
 
