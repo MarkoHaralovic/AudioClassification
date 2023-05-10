@@ -15,8 +15,10 @@ Y = np.load("path_to_augmentedY.npy",
             allow_pickle=True).astype(np.float16)
 
 # X = np.reshape(X, (*X.shape, 1)).astype(np.float32)
+# normalize data
 X = (X - X.mean()) / X.std()
 
+# random shuffle data before the models splits it into 80/20 training/validation dataset
 X, Y = shuffle(X, Y, random_state=10)
 
 
@@ -86,8 +88,10 @@ input_shape = X.shape[1:]
 print("input shape ", input_shape)
 model = kratimenosCNN(input_shape=input_shape)
 #  model = load_model('path_to_h5_model')
+
 lr_reduction = ReduceLROnPlateau(
     monitor='val_loss', factor=0.1, patience=5, verbose=1)
+
 early_stopping = EarlyStopping(
     monitor='val_loss', patience=7, verbose=1)  # increase to 7 myb
 history = model.fit(X, Y, validation_split=0.2,

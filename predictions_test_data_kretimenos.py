@@ -26,19 +26,33 @@ class_names = ['cel', 'cla', 'flu', 'gac', 'gel',
 def parse_label(audio_path):
     """
     Parse the label from the audio file path and create a binary representation of the label.
+
+    :param audio_path: str, path to the audio file
+    :return: list, binary_labels representing the presence of each instrument in the audio file
     """
-    valid_instruments = ['cel', 'cla', 'flu', 'gac',
-                         'gel', 'org', 'pia', 'sax', 'tru', 'vio', 'voi']
-    binary_labels = [
-        1 if f'[{inst}]' in audio_path else 0 for inst in valid_instruments]
-    return binary_labels
+    try:
+        valid_instruments = ['cel', 'cla', 'flu', 'gac',
+                             'gel', 'org', 'pia', 'sax', 'tru', 'vio', 'voi']
+        binary_labels = [
+            1 if f'[{inst}]' in audio_path else 0 for inst in valid_instruments]
+        return binary_labels
+    except Exception as e:
+        print(f"Error in parse_label for {audio_path}: {e}")
+        return None
 
 
 def preprocess_audio(audio_path):
     """
     Load an audio file, convert it to mono, normalize it, segment it into fixed-length segments,
     and convert each segment into a set of waveform frames.
+
+    :param audio_path: str, path to the audio file
+    :return: list, waveform frames for each segment of the audio file
+    :raises InvalidAudioPathError: if the provided audio_path is not valid
     """
+    if not os.path.isfile(audio_path):
+        raise InvalidAudioPathError(f"Invalid audio path: {audio_path}")
+
     audio, sr = librosa.load(audio_path, sr=SAMPLE_RATE, mono=False)
     audio = librosa.to_mono(audio)
     audio = audio / np.max(np.abs(audio))
@@ -64,7 +78,11 @@ def preprocess_audio(audio_path):
 
 def process_audio_files(input_dir):
     """
-    process all the audio files in a given directory
+    Process all the audio files in a given directory and extract features such as log-mel
+    spectrograms, chromagrams, and spectral contrast features.
+
+    :param input_dir: str, path to the input directory
+    :return: tuple, (X, y) where X is an array of feature arrays and y is an array of binary labels
     """
     X = []
     y = []
@@ -90,6 +108,12 @@ def process_audio_files(input_dir):
 
 
 def convert_np_int32_to_int(dict_obj):
+    """
+    Recursively convert all np.int32 values in a dictionary to int values.
+
+    :param dict_obj: dict, dictionary to process
+    :return: dict, dictionary with np.int32 values replaced by int values
+    """
     for key, value in dict_obj.items():
         if isinstance(value, dict):
             convert_np_int32_to_int(value)
@@ -99,6 +123,13 @@ def convert_np_int32_to_int(dict_obj):
 
 
 def hamming_accuracy(y_true, y_pred):
+    """
+    Compute the hamming accuracy between the true labels and predicted labels.
+
+    :param y_true: tensor, true labels
+    :param y_pred: tensor, predicted labels
+    :return: float, hamming accuracy
+    """
     y_true = K.round(K.clip(y_true, 0, 1))
     y_pred = K.round(K.clip(y_pred, 0, 1))
     equal_elements = K.cast(K.equal(y_true, y_pred), K.floatx())
@@ -106,7 +137,14 @@ def hamming_accuracy(y_true, y_pred):
 
 
 def predict_and_export(model_path, audio_folder, output_json_path):
-    # Load the saved model
+    """ Load a pre-trained model, process audio files, make predictions, and export the results to a JSON file.
+
+    :param model_path: str, path to the pre-trained model file
+    :param audio_folder: str, path to the folder containing audio files to process
+    :param output_json_path: str, path to the output JSON file for saving results
+    :return: None
+    """
+
     model = tf.keras.models.load_model(
         model_path,
         custom_objects={

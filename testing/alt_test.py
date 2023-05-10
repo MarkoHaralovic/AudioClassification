@@ -23,6 +23,14 @@ DURATION = 1.0
 
 
 def preprocess_audio(audio_path):
+    """
+    Preprocess audio file by converting it to mono, normalizing it, and
+    segmenting it into one-second intervals. Then, compute the log-mel
+    spectrograms for each audio segment.
+
+    :param audio_path: str, path to the audio file
+    :return: list of log-mel spectrograms for each audio segment
+    """
     audio, sr = librosa.load(audio_path, sr=SAMPLE_RATE, mono=False)
     audio = librosa.to_mono(audio)
     audio = audio / np.max(np.abs(audio))
@@ -47,6 +55,15 @@ def preprocess_audio(audio_path):
 
 
 def validation_accuracy(file_path_txt, predictions, threshold=0.5):
+    """
+    Calculate the validation accuracy based on the ground truth from
+    the input file and the predicted values.
+
+    :param file_path_txt: str, path to the ground truth file
+    :param predictions: dict, predicted values for each instrument
+    :param threshold: float, threshold for prediction acceptance
+    :return: float, validation accuracy
+    """
     correct = 0
     total = 0
 
@@ -63,6 +80,13 @@ def validation_accuracy(file_path_txt, predictions, threshold=0.5):
 
 
 def process_audio_files(input_dir):
+    """
+    Process all audio files in the input directory and generate log-mel
+    spectrograms for each file.
+
+    :param input_dir: str, path to the input directory
+    :return: np.array, log-mel spectrograms for all processed files
+    """
     X = []
 
     for root, dirs, files in os.walk(input_dir):
@@ -84,15 +108,34 @@ def process_audio_files(input_dir):
 
 
 def predict_windows(model, log_mel_spectrogram):
+    """
+    Make predictions for an input log-mel spectrogram using the given model.
+    :param model: Keras model, trained model for predictions
+    :param log_mel_spectrogram: np.array, input log-mel spectrogram
+    :return: np.array, model predictions
+    """
     return model.predict(np.array([log_mel_spectrogram]))
 
 
 def aggregate_predictions(predictions):
+    """
+    Aggregate predictions from multiple windows by summing them and normalizing.
+    :param predictions: list of np.arrays, predictions for each window
+    :return: np.array, aggregated predictions
+    """
     summed = np.sum(predictions, axis=0)
     return summed / np.sum(summed)
 
 
-def test_model(model, test_data_path, threshold=0.31):
+def test_model(model, test_data_path, threshold=0.5):
+    """
+    Test the given model on the data from the test_data_path and calculate
+    the accuracy of the predictions.
+    :param model: Keras model, trained model for predictions
+    :param test_data_path: str, path to the test data directory
+    :param threshold: float, threshold for prediction acceptance
+    :return: dict, results for each test file
+    """
     results = {}
     accuracies = []
 

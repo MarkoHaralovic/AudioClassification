@@ -27,6 +27,17 @@ DURATION = 1.0
 
 
 def preprocess_audio(audio_path):
+    """
+    Load an audio file, convert it to mono, normalize it, segment it into fixed-length segments,
+    and convert each segment into a set of waveform frames.
+
+    :param audio_path: str, path to the audio file
+    :return: list, waveform frames for each segment of the audio file
+    :raises InvalidAudioPathError: if the provided audio_path is not valid
+    """
+    if not os.path.isfile(audio_path):
+        raise InvalidAudioPathError(f"Invalid audio path: {audio_path}")
+
     audio, sr = librosa.load(audio_path, sr=SAMPLE_RATE, mono=False)
     audio = librosa.to_mono(audio)
     audio = audio / np.max(np.abs(audio))
@@ -51,6 +62,14 @@ def preprocess_audio(audio_path):
 
 
 def validation_accuracy(file_path_txt, predictions, threshold=0.5):
+    """
+    Calculate the validation accuracy based on the ground truth and the predicted instruments.
+
+    :param file_path_txt: str, path to the ground truth text file
+    :param predictions: dict, instrument predictions
+    :param threshold: float, threshold value for predicting instruments
+    :return: float, validation accuracy
+    """
     correct = 0
     total = 0
 
@@ -67,6 +86,13 @@ def validation_accuracy(file_path_txt, predictions, threshold=0.5):
 
 
 def process_audio_files(input_dir):
+    """
+    Process all audio files in the input directory and generate log-mel
+    spectrograms for each file.
+
+    :param input_dir: str, path to the input directory
+    :return: np.array, log-mel spectrograms
+    """
     X = []
 
     for root, dirs, files in os.walk(input_dir):
@@ -87,15 +113,33 @@ def process_audio_files(input_dir):
 
 
 def predict_windows(model, log_mel_spectrogram):
+    """
+    :param model: Keras model, trained model for predictions
+    :param log_mel_spectrogram: np.array, input log-mel spectrogram
+    :return: np.array, model predictions
+    """
+    # Make predictions for an input log-mel spectrogram using the given model.
     return model.predict(np.array([log_mel_spectrogram]))
 
 
 def aggregate_predictions(predictions):
+    """
+    Aggregate predictions from multiple windows by summing them and normalizing.
+    :param predictions: list of np.arrays, predictions for each window
+    :return: np.array, aggregated predictions
+    """
     summed = np.sum(predictions, axis=0)
     return summed / np.sum(summed)
 
 
 def hamming_accuracy(y_true, y_pred):
+    """
+    Compute the hamming accuracy between the true labels and predicted labels.
+
+    : param y_true: tensor, true labels
+    : param y_pred: tensor, predicted labels
+    : return: float, hamming accuracy
+    """
     y_true = K.round(K.clip(y_true, 0, 1))
     y_pred = K.round(K.clip(y_pred, 0, 1))
     equal_elements = K.cast(K.equal(y_true, y_pred), K.floatx())
@@ -103,6 +147,14 @@ def hamming_accuracy(y_true, y_pred):
 
 
 def test_model(model, test_data_path, threshold=0.31):
+    """
+    Test the given model on the data from the test_data_path and calculate
+    the accuracy of the predictions.
+    :param model: Keras model, trained model for predictions
+    :param test_data_path: str, path to the test data directory
+    :param threshold: float, threshold for prediction acceptance
+    :return: dict, results for each test file
+    """
     results = {}
     accuracies = []
 

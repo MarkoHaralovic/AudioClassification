@@ -90,6 +90,6 @@ if __name__ == '__main__':
     X, y = process_audio_files(
         'pat_to_irmas_trai')
     np.save(
-        'C:\\AudioClassification\\npy_data\\X\\mfccx.npy', X)
+        '...\\npy_data\\X\\mfccx.npy', X)
     np.save(
-        'C:\\AudioClassification\\npy_data\\y\\single_y.npy', y)
+        '...\\npy_data\\y\\single_y.npy', y)

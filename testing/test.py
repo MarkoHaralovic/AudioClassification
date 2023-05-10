@@ -17,6 +17,14 @@ DURATION = 1.0
 
 
 def preprocess_audio(audio_file, sr=SAMPLE_RATE):
+    """
+    Preprocess audio file by converting it to mono, normalizing it, and
+    segmenting it into one-second intervals. Then, compute the log-mel
+    spectrograms for each audio segment.
+
+    :param audio_path: str, path to the audio file
+    :return: list of log-mel spectrograms for each audio segment
+    """
     audio, sr = librosa.load(audio_file, sr=sr, mono=True)
     audio = audio / np.max(np.abs(audio))
 
@@ -41,10 +49,21 @@ def preprocess_audio(audio_file, sr=SAMPLE_RATE):
 
 
 def predict_windows(model, windows):
+    """
+    Make predictions for an input log-mel spectrogram using the given model.
+    :param model: Keras model, trained model for predictions
+    :param log_mel_spectrogram: np.array, input log-mel spectrogram
+    :return: np.array, model predictions
+    """
     return model.predict(windows)
 
 
 def aggregate_predictions(predictions):
+    """
+    Aggregate predictions from multiple windows by summing them and normalizing.
+    :param predictions: list of np.arrays, predictions for each window
+    :return: np.array, aggregated predictions
+    """
     summed = np.sum(predictions, axis=0)
     return summed / np.sum(summed)
 
@@ -64,6 +83,14 @@ def read_labels_from_file(file_path, valid_instruments):
 
 
 def test_model(model, test_data_path):
+    """
+    Test the given model on the data from the test_data_path and calculate
+    the accuracy of the predictions.
+    :param model: Keras model, trained model for predictions
+    :param test_data_path: str, path to the test data directory
+    :param threshold: float, threshold for prediction acceptance
+    :return: dict, results for each test file
+    """
     y_true = []
     X_test = []
 
