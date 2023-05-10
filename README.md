@@ -80,3 +80,7 @@ model = tf.keras.models.load_model(
 and augpoly78_test1.json is json file containing predictions of our main model on the test data with treshold set at 0.3
 
 15. Main prediction json file is : augpoly78_test.json ( treshold 0.5) 
+
+16. docker-compose-xml : by using this docker-compose.yml file, you can easily run and manage the Flask app and TensorFlow Serving services together in their respective containers, ensuring an isolated and consistent environment for both services,file builds the Docker image from the ./API directory and builds the Docker image using the Dockerfile located in ./tfserving/Dockerfile
+
+17. git contains Technical documentation and Project documentation as well.
