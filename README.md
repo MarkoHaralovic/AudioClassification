@@ -8,8 +8,8 @@ HOW TO USE THIS GIT:
 1. in folder models, there are original codes for each model. Only thing to modify are relative paths to IRMAS datasets.
 2. those models are saved as h5 files in h5_models folder, from where they can be loaded from. 
 3. test a model by loading it from h5 file and calling model.predict on a preprocessed audio
-4.code for audio augmentation is in folder audio_augment. Use augment.py. Specify path to IRMAS_training_set and set the names for labels and for X values (values for the model). The data will be saved to npy_data corresponding folder where can be loaded from and sent as an input to augpoly78.h5 model.
-5.code for audio preprocessing is in folder audio_preprocessing. 
+4. code for audio augmentation is in folder audio_augment. Use augment.py. Specify path to IRMAS_training_set and set the names for labels and for X values (values for the model). The data will be saved to npy_data corresponding folder where can be loaded from and sent as an input to augpoly78.h5 model.
+5. code for audio preprocessing is in folder audio_preprocessing. 
  - To generate one second intervals , use generating_one_second_intervals.py. 
  - to generate single labels for files (used for mel_spec_irmas_singleton.h5 model), use audio_proc_singular_labels
  - to generate mel spectrograms  (used for 78kratimenos.h5), use preprocess_spectrograms.py
@@ -23,13 +23,13 @@ HOW TO USE THIS GIT:
 8. Techinical documentation is located in the project directory, use it for techinical specifications, descriptions and user manual documentation for this project.
 9. API folder contains Dockerfile which should be run ( described in the Technical documentation), with defined requirements in the project directory. There is a file named h5_to_pb_model.py , which needs to be run only in the beggining to get the pb file to be used for tfserving and connection with API. app.py is Flask application that can be run with command python app.py , upon setting up docker, tfserving and running command: 
 docker run -p 8500:8500 -p 8501:8501 --name=tfserving --mount type=bind,source= path_to_API\\model,target=/models/[define_which_model_to_use] -e MODEL_NAME=[previously_defined_model_number] -t tensorflow/serving
+--------------------------------
 MODEL NAMES:
-- 1  78kratimenos.h5
-- 2  augpoly78.h5
-- 3  mel_spec_irmas_singleton.h5
-(docker can be installed at this link:https://www.docker.com/products/docker-desktop/)
+-   78kratimenos.h5
+-   augpoly78.h5
+-  mel_spec_irmas_singleton.h5
 
-You will have to ull the TensorFlow Serving Docker image from Docker Hub:
+You will have to pull the TensorFlow Serving Docker image from Docker Hub (docker can be installed at this link:https://www.docker.com/products/docker-desktop/):
 docker pull tensorflow/serving
 
 Start a new TensorFlow Serving container:
