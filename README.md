@@ -18,6 +18,7 @@ HOW TO USE THIS GIT:
 - F1_score.py is custom python file to calculate F! score of an model
 - call test.py on the model you want to test to get aggregated result and precision of the model
 - call test_predict.py to get the result, precision and json output (json output is saved based on h5 model name to validation_json_files, where predictions are saved, with accuracy calculated at each step and mean acc is calculated in the end)
+---------------------------------
 7.IMAGES - folder with useful images for this project
 8.Techinical documentation is located in the project directory, use it for techinical specifications, descriptions and user manual documentation for this project.
 9.API folder contains Dockerfile which should be run ( described in the Technical documentation), with defined requirements in the project directory. There is a file named h5_to_pb_model.py , which needs to be run only in the beggining to get the pb file to be used for tfserving and connection with API. app.py is Flask application that can be run with command python app.py , upon setting up docker, tfserving and running command: 
