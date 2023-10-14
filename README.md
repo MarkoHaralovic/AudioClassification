@@ -15,7 +15,7 @@ HOW TO USE THIS GIT:
  - to generate mel spectrograms  (used for 78kratimenos.h5), use preprocess_spectrograms.py
  - to generate mel spectrograms, chromagrams and spectral contrast (used for augpoly78.h5) , use preprocess_mel_spec_chromagram_spec_contrast.py
 6. code for testing is located inside testing folder
-- F1_score.py is custom python file to calculate F! score of an model
+- F1_score.py is custom python file to calculate F1 score of an model
 - call test.py on the model you want to test to get aggregated result and precision of the model
 - call test_predict.py to get the result, precision and json output (json output is saved based on h5 model name to validation_json_files, where predictions are saved, with accuracy calculated at each step and mean acc is calculated in the end)
 ---------------------------------
