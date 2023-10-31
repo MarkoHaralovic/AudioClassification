@@ -76,6 +76,7 @@ model = tf.keras.models.load_model(
         'F1Score': F1Score,
         'hamming_accuracy': hamming_accuracy
     })
+```
 ### Generating JSON File Predictions
 Use `predictions_test_data_augpoly.py` to generate a JSON file with predictions for the main model on the test data. The file is saved in the `testing_json_file` folder.
 
