@@ -76,34 +76,30 @@ model = tf.keras.models.load_model(
         'F1Score': F1Score,
         'hamming_accuracy': hamming_accuracy
     })
-## Generating JSON File Predictions
+### Generating JSON File Predictions
 Use `predictions_test_data_augpoly.py` to generate a JSON file with predictions for the main model on the test data. The file is saved in the `testing_json_file` folder.
 
-## JSON Prediction Files
+### JSON Prediction Files
 - `augpoly78_test.json` contains predictions with a threshold set at 0.5.
 - `augpoly78_test1.json` contains predictions with a threshold set at 0.3.
 
-## Main Prediction JSON File
+### Main Prediction JSON File
 The main prediction JSON file is `augpoly78_test.json` (threshold 0.5).
 
-## Docker Compose
+### Docker Compose
 Use the `docker-compose.yml` file to run and manage the Flask app and TensorFlow Serving services in containers.
 
-## Documentation
+### Documentation
 The repository contains both Technical and Project documentation.
 
-## Model Names
+### Model Names
 - `78kratimenos.h5`
 - `augpoly78.h5`
 - `mel_spec_irmas_singleton.h5`
 
 For detailed instructions on setting up and running the models, refer to the Technical Documentation.
 
-## Contributions and Feedback
-We welcome contributions and feedback on this project. Please follow the guidelines in the `CONTRIBUTING.md` file for contributions.
+### Contributions and Feedback
+We welcome contributions and feedback on this project.
 
-## License
-This project is licensed under the MIT License.
 
-## Acknowledgments
-This work is based on research funded by [Your Institution/Organization Name].
